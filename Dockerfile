@@ -10,5 +10,7 @@ COPY . .
 ENV PORT="80"
 ENV HOST="0.0.0.0"
 
+EXPOSE ${PORT}
+
 ENTRYPOINT ["python", "-m"]
 CMD ["app.tools.run_server"]
