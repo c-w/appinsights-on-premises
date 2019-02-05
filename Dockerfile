@@ -12,5 +12,4 @@ ENV HOST="0.0.0.0"
 
 EXPOSE ${PORT}
 
-ENTRYPOINT ["python", "-m"]
-CMD ["app.tools.run_server"]
+CMD ["python", "-m", "app.tools.run_server"]

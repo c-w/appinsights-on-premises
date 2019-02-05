@@ -15,9 +15,9 @@ keep all data on-premises.
 docker-compose up --build -d
 
 # initialize the database and register a client
-docker-compose run app app.tools.create_db
-ikey="$(docker-compose run app app.tools.register_client)"
+docker-compose exec app python -m app.tools.create_db
+ikey="$(docker-compose exec app python -m app.tools.register_client)"
 
 # send sample telemetry to the appinsights server
-docker-compose run app app.tools.generate_telemetry --ikey "${ikey}"
+docker-compose exec app python -m app.tools.generate_telemetry --ikey "${ikey}"
 ```
