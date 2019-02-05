@@ -111,7 +111,7 @@ async def _insert_exceptions(db: Database, telemetries: Iterable[dict]):
     ) for telemetry in telemetries])
 
 
-async def register(client: Optional[str] = None):
+async def register(client: Optional[str] = None) -> str:
     client = client or str(uuid4())
 
     db = await _get_db_pool()

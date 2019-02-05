@@ -46,7 +46,7 @@ class _Config:
 
     def update(self, values: dict):
         for key, value in values.items():
-            if key and value:
+            if key and value and hasattr(self, key.upper()):
                 self._env[key.upper()] = str(value)
 
 
