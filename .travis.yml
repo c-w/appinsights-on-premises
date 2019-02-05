@@ -7,7 +7,6 @@ services:
   - docker
 
 install:
-  - pip install -r requirements-dev.txt
   - if [[ -n "${TRAVIS_TAG}" ]]; then export DOCKER_IMAGE="${DOCKER_USER}/appinsights-on-premises:${TRAVIS_TAG}"; fi
   - docker-compose build
 
@@ -22,8 +21,8 @@ before_script:
   - export IKEY
 
 script:
-  - flake8 app
-  - mypy app
+  - docker-compose exec app flake8 app
+  - docker-compose exec app mypy app
   - docker-compose exec app python -m app.tools.generate_telemetry --ikey "${IKEY}"
 
 after_script:

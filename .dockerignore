@@ -1,4 +1,5 @@
 *
 !app/
 !requirements*.txt
+!setup.cfg
 __pycache__/
