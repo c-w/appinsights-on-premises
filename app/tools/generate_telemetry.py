@@ -1,4 +1,5 @@
 """Script to send random telemetry to Application Insights"""
+from collections import namedtuple
 from logging import getLogger
 from random import choice
 from string import ascii_letters
@@ -10,6 +11,12 @@ from applicationinsights.channel import TelemetryChannel
 from applicationinsights.channel import TelemetryContext
 
 LOG = getLogger(__name__)
+
+SendConfig = namedtuple('SendConfig', (
+    'num_events',
+    'num_traces',
+    'num_exceptions',
+))
 
 
 class NoRetrySender(SynchronousSender):
@@ -77,8 +84,7 @@ def send_exceptions(client: TelemetryClient, num_exceptions: int):
             LOG.info('sent exception %s', exception)
 
 
-def main(endpoint: str, ikey: str,
-         num_events: int, num_traces: int, num_exceptions: int):
+def main(endpoint: str, ikey: str, send_config: SendConfig):
     sender = NoRetrySender(endpoint)
     queue = SynchronousQueue(sender)
     context = TelemetryContext()
@@ -86,9 +92,9 @@ def main(endpoint: str, ikey: str,
     channel = TelemetryChannel(context, queue)
     client = TelemetryClient(ikey, telemetry_channel=channel)
 
-    send_events(client, num_events)
-    send_logs(client, num_traces)
-    send_exceptions(client, num_exceptions)
+    send_events(client, send_config.num_events)
+    send_logs(client, send_config.num_traces)
+    send_exceptions(client, send_config.num_exceptions)
 
     client.flush()
 
@@ -112,13 +118,11 @@ def cli():
     if args.random_seed is not None:
         seed(args.random_seed)
 
-    main(
-        endpoint=args.endpoint,
-        ikey=args.ikey,
+    main(args.endpoint, args.ikey, SendConfig(
         num_events=args.num_events,
         num_traces=args.num_traces,
         num_exceptions=args.num_exceptions,
-    )
+    ))
 
 
 if __name__ == '__main__':
