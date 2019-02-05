@@ -1,8 +1,4 @@
 """Script to run the telemetry server"""
-from asyncio import get_event_loop
-from contextlib import closing
-from urllib.parse import urlunparse
-
 from app.config import config
 
 
@@ -12,6 +8,9 @@ async def main():
 
 def cli():
     from argparse import ArgumentParser
+    from asyncio import get_event_loop
+    from contextlib import closing
+    from urllib.parse import urlunparse
 
     parser = ArgumentParser(description=__doc__)
     parser.add_argument('--database_url', default=urlunparse(config.DATABASE_URL))

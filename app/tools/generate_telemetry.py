@@ -1,8 +1,7 @@
 """Script to send random telemetry to Application Insights"""
-from random import choice
-from random import seed
-from string import ascii_letters
 from logging import getLogger
+from random import choice
+from string import ascii_letters
 
 from applicationinsights import TelemetryClient
 from applicationinsights.channel import SynchronousQueue
@@ -97,6 +96,7 @@ def main(endpoint: str, ikey: str,
 def cli():
     from argparse import ArgumentParser
     from os import getenv
+    from random import seed
 
     parser = ArgumentParser(description=__doc__)
     parser.add_argument('--ikey', required=True)

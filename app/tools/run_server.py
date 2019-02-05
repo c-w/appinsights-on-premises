@@ -1,6 +1,15 @@
 """Script to run the telemetry server"""
-from app.config import config
 from app.api import app
+from app.config import config
+
+
+def main():
+    app.run(
+        host=config.HOST,
+        port=config.PORT,
+        debug=config.DEBUG,
+        workers=config.WORKERS,
+    )
 
 
 def cli():
@@ -15,12 +24,7 @@ def cli():
 
     config.update(args.__dict__)
 
-    app.run(
-        host=config.HOST,
-        port=config.PORT,
-        debug=config.DEBUG,
-        workers=config.WORKERS,
-    )
+    main()
 
 
 if __name__ == '__main__':
