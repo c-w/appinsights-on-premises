@@ -7,13 +7,15 @@ services:
   - docker
 
 install:
-  - pip install -r requirements.txt
   - pip install flake8 mypy
+  - docker-compose build
 
 before_script:
-  - docker-compose build
+  - export POSTGRES_PORT=8888
+  - export APP_PORT=8080
   - docker-compose up -d
-  - while ! nc -z localhost 5432; do sleep 2s; done
+  - while ! nc -z localhost ${POSTGRES_PORT}; do sleep 2s; done
+  - while ! nc -z localhost ${APP_PORT}; do sleep 2s; done
   - docker-compose run app app.tools.create_db
   - IKEY="$(docker-compose run app app.tools.register_client)"
   - export IKEY

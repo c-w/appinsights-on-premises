@@ -10,7 +10,7 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       APP_URL: http://app
     ports:
-      - 8000:80
+      - ${APP_PORT}:80
 
   postgres:
     image: postgres:11-alpine
@@ -19,4 +19,4 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - 5432:5432
+      - ${POSTGRES_PORT}:5432
