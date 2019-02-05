@@ -1,5 +1,4 @@
 from itertools import groupby
-from json import dumps
 from operator import itemgetter
 from pathlib import Path
 from typing import Iterable
@@ -14,6 +13,7 @@ from asyncpg import UniqueViolationError
 from asyncpg import create_pool
 from asyncpg.pool import Pool
 from dateutil.parser import parse
+from ujson import dumps
 
 from app.config import config
 from app.domain.appinsights import APPINSIGHTS_EVENT
