@@ -31,6 +31,6 @@ async def ingest(request: Request) -> HTTPResponse:
     except UnknownClient:
         return response.json({'error': 'unknown client'}, status=403)
     except NotImplementedError:
-        return response.json({'error': 'unknown telemetry'}, status=400)
+        return response.json({'error': 'unknown telemetry'}, status=500)
 
     return response.json({'ingested': len(telemetries)})

@@ -13,6 +13,17 @@ from applicationinsights.channel import TelemetryContext
 LOG = getLogger(__name__)
 
 
+class NoRetrySender(SynchronousSender):
+    def send(self, data_to_send):
+        super().send(data_to_send)
+        if not self.did_send_all_telemetry():
+            raise Exception('Unable to send all telemetry')
+
+    def did_send_all_telemetry(self) -> bool:
+        # noinspection PyProtectedMember
+        return self._queue._queue.qsize() == 0
+
+
 def random_string(size: int) -> str:
     return ''.join(choice(ascii_letters) for _ in range(size))
 
@@ -42,7 +53,7 @@ def generate_exception(size: int = 8) -> Exception:
 
 def main(endpoint: str, ikey: str,
          num_events: int, num_traces: int, num_exceptions: int):
-    sender = SynchronousSender(endpoint)
+    sender = NoRetrySender(endpoint)
     queue = SynchronousQueue(sender)
     context = TelemetryContext()
     context.instrumentation_key = ikey
