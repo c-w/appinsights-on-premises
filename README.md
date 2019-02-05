@@ -15,7 +15,7 @@ keep all data on-premises.
 docker-compose build
 
 # run the database
-docker-compose up -d postgres
+docker-compose up -d db
 
 # initialize the database (can be run only once)
 docker-compose run app app.tools.create_db
