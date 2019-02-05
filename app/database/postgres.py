@@ -39,18 +39,6 @@ async def _get_db_pool() -> Pool:
     )
 
 
-async def create():
-    db = await _get_db_pool()
-
-    schema_file = Path(__file__).parent / 'postgres.sql'
-    with schema_file.open(encoding='utf-8') as fobj:
-        schema = fobj.read()
-
-    for statement in schema.split(';'):
-        if statement.strip():
-            await db.execute(statement)
-
-
 async def _insert_events(db: Database, telemetries: Iterable[dict]):
     await db.executemany('''
         INSERT INTO events (
@@ -109,6 +97,18 @@ async def _insert_exceptions(db: Database, telemetries: Iterable[dict]):
         parse(telemetry['time']),
         dumps(telemetry['data']['baseData'].get('exceptions', []))
     ) for telemetry in telemetries])
+
+
+async def create():
+    db = await _get_db_pool()
+
+    schema_file = Path(__file__).parent / 'postgres.sql'
+    with schema_file.open(encoding='utf-8') as fobj:
+        schema = fobj.read()
+
+    for statement in schema.split(';'):
+        if statement.strip():
+            await db.execute(statement)
 
 
 async def register(client: Optional[str] = None) -> str:
