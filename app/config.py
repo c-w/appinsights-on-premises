@@ -1,6 +1,7 @@
 from importlib import import_module
 from os import cpu_count
 from os import environ
+from typing import Optional
 from urllib.parse import ParseResult
 from urllib.parse import parse_qs
 from urllib.parse import urlparse
@@ -8,8 +9,8 @@ from urllib.parse import urlparse
 
 # noinspection PyPep8Naming
 class _Config:
-    def __init__(self, env: dict = environ):
-        self._env = dict(env)
+    def __init__(self, env: Optional[dict] = None):
+        self._env = dict(env or environ)
 
     @property
     def DEBUG(self) -> bool:
@@ -29,7 +30,7 @@ class _Config:
 
     @property
     def DATABASE_URL(self) -> ParseResult:
-        return urlparse(self._env.get('DATABASE_URL'))
+        return urlparse(self._env.get('DATABASE_URL', ''))
 
     @property
     def DATABASE_OPTIONS(self) -> dict:

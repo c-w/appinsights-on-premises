@@ -1,5 +1,7 @@
 # AppInsights on-premises
 
+[![Travis CI status](https://api.travis-ci.org/CatalystCode/appinsights-on-premises.svg?branch=master)](https://travis-ci.org/CatalystCode/appinsights-on-premises)
+
 ## What's this?
 
 This repository contains a server that's API compatible with [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview)
