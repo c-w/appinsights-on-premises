@@ -11,7 +11,9 @@ install:
   - pip install flake8 mypy
 
 before_script:
-  - docker-compose up -d --build
+  - docker-compose build
+  - docker-compose up -d
+  - while ! nc -z localhost 5432; do sleep 2s; done
   - docker-compose run app app.tools.create_db
   - IKEY="$(docker-compose run app app.tools.register_client)"
   - export IKEY

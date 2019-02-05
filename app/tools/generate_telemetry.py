@@ -51,6 +51,33 @@ def generate_exception(size: int = 8) -> Exception:
     return Exception(random_string(size))
 
 
+def send_events(client, num_events):
+    for _ in range(num_events):
+        event = generate_event_name()
+        properties = generate_event_properties()
+        client.track_event(event, properties)
+        LOG.info('sent event %s %r', event, properties)
+
+
+def send_logs(client, num_traces):
+    for _ in range(num_traces):
+        trace = generate_log_message()
+        severity = generate_log_severity()
+        client.track_trace(trace, severity=severity)
+        LOG.info('sent trace %s %d', trace, severity)
+
+
+def send_exceptions(client, num_exceptions):
+    for _ in range(num_exceptions):
+        exception = generate_exception()
+        # noinspection PyBroadException
+        try:
+            raise exception
+        except Exception:
+            client.track_exception()
+            LOG.info('sent exception %s', exception)
+
+
 def main(endpoint: str, ikey: str,
          num_events: int, num_traces: int, num_exceptions: int):
     sender = NoRetrySender(endpoint)
@@ -60,25 +87,9 @@ def main(endpoint: str, ikey: str,
     channel = TelemetryChannel(context, queue)
     client = TelemetryClient(ikey, telemetry_channel=channel)
 
-    for _ in range(num_events):
-        event = generate_event_name()
-        properties = generate_event_properties()
-        client.track_event(event, properties)
-        LOG.info('sent event %s %r', event, properties)
-
-    for _ in range(num_traces):
-        trace = generate_log_message()
-        severity = generate_log_severity()
-        client.track_trace(trace, severity=severity)
-        LOG.info('sent trace %s %d', trace, severity)
-
-    for _ in range(num_exceptions):
-        exception = generate_exception()
-        try:
-            raise exception
-        except Exception:
-            client.track_exception()
-            LOG.info('sent exception %s', exception)
+    send_events(client, num_events)
+    send_logs(client, num_traces)
+    send_exceptions(client, num_exceptions)
 
     client.flush()
 
