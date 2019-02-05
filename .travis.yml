@@ -7,7 +7,7 @@ services:
   - docker
 
 install:
-  - pip install flake8 mypy
+  - pip install -r requirements-dev.txt
   - if [[ -n "${TRAVIS_TAG}" ]]; then export DOCKER_IMAGE="${DOCKER_USER}/appinsights-on-premises:${TRAVIS_TAG}"; fi
   - docker-compose build
 
