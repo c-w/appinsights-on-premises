@@ -7,7 +7,6 @@ services:
   - docker
 
 install:
-  - if [[ -n "${TRAVIS_TAG}" ]]; then export DOCKER_IMAGE="${DOCKER_USER}/appinsights-on-premises:${TRAVIS_TAG}"; fi
   - docker-compose build
 
 before_script:
@@ -31,6 +30,9 @@ after_script:
 
 before_deploy:
   - echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USER}" --password-stdin
+  - export DOCKER_IMAGE="${DOCKER_USER}/appinsights-on-premises:${TRAVIS_TAG}"
+  - export DEVTOOLS=False
+  - docker-compose build
 
 deploy:
   - provider: script

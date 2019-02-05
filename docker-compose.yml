@@ -7,7 +7,7 @@ services:
     build:
       context: .
       args:
-        DEVTOOLS: "True"
+        DEVTOOLS: ${DEVTOOLS}
     depends_on:
       - db
     environment:
