@@ -3,10 +3,23 @@ language: python
 python:
   - "3.6"
 
+services:
+  - docker
+
 install:
   - pip install -r requirements.txt
   - pip install flake8 mypy
 
+before_script:
+  - docker-compose up -d --build
+  - docker-compose run app app.tools.create_db
+  - IKEY="$(docker-compose run app app.tools.register_client)"
+  - export IKEY
+
 script:
   - flake8 app
   - mypy app
+  - docker-compose run app app.tools.generate_telemetry --ikey "${IKEY}"
+
+after_script:
+  - docker-compose down --volumes --remove-orphans
