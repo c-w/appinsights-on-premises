@@ -11,20 +11,12 @@ keep all data on-premises.
 ## Usage
 
 ```bash
-# prepare the containers
-docker-compose build
+# run the database and appinsights server
+docker-compose up --build -d
 
-# run the database
-docker-compose up -d db
-
-# initialize the database (can be run only once)
+# initialize the database and register a client
 docker-compose run app app.tools.create_db
-
-# register a client (can be run only once)
 ikey="$(docker-compose run app app.tools.register_client)"
-
-# run the appinsights server
-docker-compose up -d app
 
 # send sample telemetry to the appinsights server
 docker-compose run app app.tools.generate_telemetry --ikey "${ikey}"
