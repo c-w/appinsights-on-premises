@@ -51,7 +51,7 @@ def generate_exception(size: int = 8) -> Exception:
     return Exception(random_string(size))
 
 
-def send_events(client, num_events):
+def send_events(client: TelemetryClient, num_events: int):
     for _ in range(num_events):
         event = generate_event_name()
         properties = generate_event_properties()
@@ -59,7 +59,7 @@ def send_events(client, num_events):
         LOG.info('sent event %s %r', event, properties)
 
 
-def send_logs(client, num_traces):
+def send_logs(client: TelemetryClient, num_traces: int):
     for _ in range(num_traces):
         trace = generate_log_message()
         severity = generate_log_severity()
@@ -67,7 +67,7 @@ def send_logs(client, num_traces):
         LOG.info('sent trace %s %d', trace, severity)
 
 
-def send_exceptions(client, num_exceptions):
+def send_exceptions(client: TelemetryClient, num_exceptions: int):
     for _ in range(num_exceptions):
         exception = generate_exception()
         # noinspection PyBroadException
