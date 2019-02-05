@@ -36,7 +36,12 @@ def generate_log_severity() -> str:
     return choice(['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'])
 
 
-def main(endpoint: str, ikey: str, num_events: int, num_traces: int):
+def generate_exception(size: int = 8) -> Exception:
+    return Exception(random_string(size))
+
+
+def main(endpoint: str, ikey: str,
+         num_events: int, num_traces: int, num_exceptions: int):
     sender = SynchronousSender(endpoint)
     queue = SynchronousQueue(sender)
     context = TelemetryContext()
@@ -56,6 +61,14 @@ def main(endpoint: str, ikey: str, num_events: int, num_traces: int):
         client.track_trace(trace, severity=severity)
         LOG.info('sent trace %s %d', trace, severity)
 
+    for _ in range(num_exceptions):
+        exception = generate_exception()
+        try:
+            raise exception
+        except Exception:
+            client.track_exception()
+            LOG.info('sent exception %s', exception)
+
     client.flush()
 
 
@@ -68,6 +81,7 @@ def cli():
     parser.add_argument('--endpoint', default=getenv('APP_URL'))
     parser.add_argument('--num_events', type=int, default=10)
     parser.add_argument('--num_traces', type=int, default=10)
+    parser.add_argument('--num_exceptions', type=int, default=10)
     parser.add_argument('--random_seed', type=int, default=None)
     args = parser.parse_args()
 
@@ -81,6 +95,7 @@ def cli():
         ikey=args.ikey,
         num_events=args.num_events,
         num_traces=args.num_traces,
+        num_exceptions=args.num_exceptions,
     )
 
 

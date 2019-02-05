@@ -15,3 +15,9 @@ CREATE TABLE IF NOT EXISTS logs (
   message TEXT NOT NULL,
   severity SMALLINT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS exceptions (
+  client UUID REFERENCES clients,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  exceptions JSONB NOT NULL
+);

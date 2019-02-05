@@ -17,6 +17,7 @@ from dateutil.parser import parse
 
 from app.config import config
 from app.domain.appinsights import APPINSIGHTS_EVENT
+from app.domain.appinsights import APPINSIGHTS_EXCEPTION
 from app.domain.appinsights import APPINSIGHTS_LOG
 from app.domain.exceptions import DuplicateClient
 from app.domain.exceptions import UnknownClient
@@ -92,6 +93,24 @@ async def _insert_logs(db: Database, telemetries: Iterable[dict]):
     ) for telemetry in telemetries])
 
 
+async def _insert_exceptions(db: Database, telemetries: Iterable[dict]):
+    await db.executemany('''
+        INSERT INTO exceptions (
+            client,
+            created_at,
+            exceptions
+        ) VALUES (
+            $1::UUID,
+            $2,
+            $3
+        )
+    ''', [(
+        telemetry['iKey'],
+        parse(telemetry['time']),
+        dumps(telemetry['data']['baseData'].get('exceptions', []))
+    ) for telemetry in telemetries])
+
+
 async def register(client: Optional[str] = None):
     client = client or str(uuid4())
 
@@ -116,6 +135,8 @@ async def ingest(telemetries: Iterable[dict]):
                         await _insert_events(db, group)
                     elif event_type == APPINSIGHTS_LOG:
                         await _insert_logs(db, group)
+                    elif event_type == APPINSIGHTS_EXCEPTION:
+                        await _insert_exceptions(db, group)
                     else:
                         raise NotImplementedError(event_type)
             except ForeignKeyViolationError:
