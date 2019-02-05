@@ -8,6 +8,7 @@ services:
 
 install:
   - pip install flake8 mypy
+  - if [[ -n "${TRAVIS_TAG}" ]]; then export DOCKER_IMAGE="${DOCKER_USER}/appinsights-on-premises:${TRAVIS_TAG}"; fi
   - docker-compose build
 
 before_script:
@@ -27,3 +28,13 @@ script:
 
 after_script:
   - docker-compose down --volumes --remove-orphans
+
+before_deploy:
+  - echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USER}" --password-stdin
+
+deploy:
+  - provider: script
+    script: docker push "${DOCKER_IMAGE}"
+    on:
+      repo: CatalystCode/appinsights-on-premises
+      tags: true

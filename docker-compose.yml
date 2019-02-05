@@ -3,6 +3,7 @@ version: '3'
 services:
 
   app:
+    image: ${DOCKER_IMAGE}
     build: .
     depends_on:
       - postgres
