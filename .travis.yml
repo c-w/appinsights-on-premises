@@ -22,6 +22,7 @@ before_script:
 
 script:
   - docker-compose exec app flake8 app
+  - docker-compose exec app isort --quiet --check-only --recursive app
   - docker-compose exec app mypy app
   - docker-compose exec app python -m app.tools.generate_telemetry --ikey "${IKEY}"
 
