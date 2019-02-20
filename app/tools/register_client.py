@@ -5,14 +5,19 @@ from typing import Optional
 from syncer import sync
 
 from app.config import config
+from app.domain.exceptions import DuplicateClient
 from app.tools import wait_for
 
 
 @sync
 async def main(ikey: Optional[str], outfile: IO[str]):
     wait_for(config.DATABASE_URL)
-    client = await config.DATABASE.register(ikey)
-    outfile.write(client)
+    try:
+        client = await config.DATABASE.register(ikey)
+    except DuplicateClient:
+        pass
+    else:
+        outfile.write(client)
 
 
 def cli():
