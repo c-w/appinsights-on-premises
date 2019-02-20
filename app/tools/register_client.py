@@ -2,9 +2,12 @@
 from typing import IO
 from typing import Optional
 
+from syncer import sync
+
 from app.config import config
 
 
+@sync
 async def main(ikey: Optional[str], outfile: IO[str]):
     client = await config.DATABASE.register(ikey)
     outfile.write(client)
@@ -13,8 +16,6 @@ async def main(ikey: Optional[str], outfile: IO[str]):
 def cli():
     from argparse import ArgumentParser
     from argparse import FileType
-    from asyncio import get_event_loop
-    from contextlib import closing
     from sys import stdout
     from urllib.parse import urlunparse
 
@@ -26,8 +27,7 @@ def cli():
 
     config.update(args.__dict__)
 
-    with closing(get_event_loop()) as loop:
-        loop.run_until_complete(main(args.ikey, args.outfile))
+    main(args.ikey, args.outfile)
 
 
 if __name__ == '__main__':

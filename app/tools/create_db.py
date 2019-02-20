@@ -1,15 +1,16 @@
 """Script to run the telemetry server"""
+from syncer import sync
+
 from app.config import config
 
 
+@sync
 async def main():
     await config.DATABASE.create()
 
 
 def cli():
     from argparse import ArgumentParser
-    from asyncio import get_event_loop
-    from contextlib import closing
     from urllib.parse import urlunparse
 
     parser = ArgumentParser(description=__doc__)
@@ -18,8 +19,7 @@ def cli():
 
     config.update(args.__dict__)
 
-    with closing(get_event_loop()) as loop:
-        loop.run_until_complete(main())
+    main()
 
 
 if __name__ == '__main__':
