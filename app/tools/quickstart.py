@@ -4,17 +4,19 @@ from subprocess import check_call
 from sys import executable
 from typing import Optional
 
-from app.tools.run_server import main as run_server
+from app.tools import create_db
+from app.tools import register_client
+from app.tools import run_server
 
 
 def main(ikey: Optional[str] = None):
-    check_call([executable, '-m', 'app.tools.create_db'])
+    check_call([executable, '-m', create_db.__name__])
 
     ikey = ikey or getenv('APPINSIGHTS_INSTRUMENTATIONKEY')
     if ikey:
-        check_call([executable, '-m', 'app.tools.register_client', '--ikey', ikey])
+        check_call([executable, '-m', register_client.__name__, '--ikey', ikey])
 
-    run_server()
+    run_server.main()
 
 
 def cli():
