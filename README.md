@@ -11,13 +11,12 @@ keep all data on-premises.
 ## Usage
 
 ```bash
+# define the appinsights client to use, can be any guid
+export APPINSIGHTS_INSTRUMENTATIONKEY=553161ed-0c6b-41a8-973e-77a411391be5
+
 # run the database and appinsights server
 docker-compose up --build -d
 
-# initialize the database and register a client
-docker-compose exec app python -m app.tools.create_db
-ikey="$(docker-compose exec app python -m app.tools.register_client)"
-
 # send sample telemetry to the appinsights server
-docker-compose exec app python -m app.tools.generate_telemetry --ikey "${ikey}"
+docker-compose exec app python -m app.tools.generate_telemetry --ikey "${APPINSIGHTS_INSTRUMENTATIONKEY}"
 ```

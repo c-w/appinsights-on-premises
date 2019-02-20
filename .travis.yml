@@ -9,16 +9,14 @@ install:
 before_script:
   - export POSTGRES_PORT=8888
   - export APP_PORT=8080
+  - export APPINSIGHTS_INSTRUMENTATIONKEY="$(python3 -c 'import uuid; print(uuid.uuid4())')"
   - docker-compose up -d
-  - docker-compose run app python -m app.tools.create_db
-  - IKEY="$(docker-compose run app python -m app.tools.register_client)"
-  - export IKEY
 
 script:
   - docker-compose run app flake8 app
   - docker-compose run app isort --quiet --check-only --recursive app
   - docker-compose run app mypy app
-  - docker-compose run app python -m app.tools.generate_telemetry --ikey "${IKEY}"
+  - docker-compose run app python -m app.tools.generate_telemetry --ikey "${APPINSIGHTS_INSTRUMENTATIONKEY}"
 
 after_script:
   - docker-compose down --volumes --remove-orphans

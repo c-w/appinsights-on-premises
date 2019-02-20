@@ -1,19 +1,18 @@
 """Script to boostrap the telemetry server start process"""
-from io import StringIO
 from os import getenv
+from subprocess import check_call
+from sys import executable
 from typing import Optional
 
-from app.tools.create_db import main as create_db
-from app.tools.register_client import main as register_client
 from app.tools.run_server import main as run_server
 
 
 def main(ikey: Optional[str] = None):
-    create_db()
+    check_call([executable, '-m', 'app.tools.create_db'])
 
     ikey = ikey or getenv('APPINSIGHTS_INSTRUMENTATIONKEY')
     if ikey:
-        register_client(ikey, StringIO())
+        check_call([executable, '-m', 'app.tools.register_client', '--ikey', ikey])
 
     run_server()
 
