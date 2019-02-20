@@ -3,12 +3,15 @@ from collections import namedtuple
 from logging import getLogger
 from random import choice
 from string import ascii_letters
+from urllib.parse import urlparse
 
 from applicationinsights import TelemetryClient
 from applicationinsights.channel import SynchronousQueue
 from applicationinsights.channel import SynchronousSender
 from applicationinsights.channel import TelemetryChannel
 from applicationinsights.channel import TelemetryContext
+
+from app.tools import wait_for
 
 LOG = getLogger(__name__)
 
@@ -85,6 +88,8 @@ def send_exceptions(client: TelemetryClient, num_exceptions: int):
 
 
 def main(endpoint: str, ikey: str, send_config: SendConfig):
+    wait_for(urlparse(endpoint))
+
     sender = NoRetrySender(endpoint)
     queue = SynchronousQueue(sender)
     context = TelemetryContext()
