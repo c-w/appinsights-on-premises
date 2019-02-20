@@ -24,11 +24,12 @@ def cli():
     from argparse import ArgumentParser
     from argparse import FileType
     from sys import stdout
+    from os import getenv
     from urllib.parse import urlunparse
 
     parser = ArgumentParser(description=__doc__)
     parser.add_argument('--database_url', default=urlunparse(config.DATABASE_URL))
-    parser.add_argument('--ikey')
+    parser.add_argument('--ikey', default=getenv('APPINSIGHTS_INSTRUMENTATIONKEY'))
     parser.add_argument('--outfile', type=FileType('w', encoding='utf-8'), default=stdout)
     args = parser.parse_args()
 
