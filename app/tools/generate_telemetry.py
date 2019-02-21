@@ -11,7 +11,6 @@ from applicationinsights import TelemetryClient
 from applicationinsights.channel import SynchronousQueue
 from applicationinsights.channel import SynchronousSender
 from applicationinsights.channel import TelemetryChannel
-from applicationinsights.channel import TelemetryContext
 
 from app.tools import wait_for
 
@@ -125,10 +124,8 @@ def main(endpoint: str, ikey: str, send_config: SendConfig):
 
     sender = NoRetrySender(endpoint)
     queue = SynchronousQueue(sender)
-    context = TelemetryContext()
-    context.instrumentation_key = ikey
-    channel = TelemetryChannel(context, queue)
-    client = TelemetryClient(ikey, telemetry_channel=channel)
+    channel = TelemetryChannel(queue=queue)
+    client = TelemetryClient(ikey, channel)
 
     send_events(client, send_config.num_events)
     send_logs(client, send_config.num_traces)
