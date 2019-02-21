@@ -4,10 +4,7 @@ services:
 
   app:
     image: "${DOCKER_IMAGE}"
-    build:
-      context: .
-      args:
-        DEVTOOLS: "${DEVTOOLS}"
+    build: .
     depends_on:
       - db
     environment:
