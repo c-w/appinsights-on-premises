@@ -131,7 +131,7 @@ async def _insert_exceptions(db: Database, telemetries: Iterable[dict]):
     ) for telemetry in telemetries])
 
 
-async def _insert_requests(db: Database, requests: Iterable[dict]):
+async def _insert_requests(db: Database, telemetries: Iterable[dict]):
     await db.executemany('''
         INSERT INTO requests (
             client,
@@ -153,15 +153,15 @@ async def _insert_requests(db: Database, requests: Iterable[dict]):
             $8
         )
     ''', [(
-        request['iKey'],
-        parse(request['time']),
-        request['data']['baseData']['name'],
-        request['data']['baseData']['url'],
-        _nullsafe(int, request['data']['baseData'].get('responseCode')),
-        request['data']['baseData'].get('success'),
-        _nullsafe(_to_interval, request['data']['baseData'].get('duration')),
-        dumps(request)
-    ) for request in requests])
+        telemetry['iKey'],
+        parse(telemetry['time']),
+        telemetry['data']['baseData']['name'],
+        telemetry['data']['baseData']['url'],
+        _nullsafe(int, telemetry['data']['baseData'].get('responseCode')),
+        telemetry['data']['baseData'].get('success'),
+        _nullsafe(_to_interval, telemetry['data']['baseData'].get('duration')),
+        dumps(telemetry)
+    ) for telemetry in telemetries])
 
 
 _INSERTERS = {
