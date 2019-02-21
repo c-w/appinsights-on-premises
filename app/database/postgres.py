@@ -152,6 +152,14 @@ async def _insert_requests(db: Database, requests: Iterable[dict]):
     ) for request in requests])
 
 
+_INSERTERS = {
+    APPINSIGHTS_EVENT: _insert_events,
+    APPINSIGHTS_LOG: _insert_logs,
+    APPINSIGHTS_EXCEPTION: _insert_exceptions,
+    APPINSIGHTS_REQUEST: _insert_requests,
+}
+
+
 async def create():
     db = await _get_db_pool()
 
@@ -184,15 +192,11 @@ async def ingest(telemetries: Iterable[dict]):
         async with db.transaction():
             try:
                 for event_type, group in groupby(telemetries, itemgetter('name')):
-                    if event_type == APPINSIGHTS_EVENT:
-                        await _insert_events(db, group)
-                    elif event_type == APPINSIGHTS_LOG:
-                        await _insert_logs(db, group)
-                    elif event_type == APPINSIGHTS_EXCEPTION:
-                        await _insert_exceptions(db, group)
-                    elif event_type == APPINSIGHTS_REQUEST:
-                        await _insert_requests(db, group)
-                    else:
+                    try:
+                        inserter = _INSERTERS[event_type]
+                    except KeyError:
                         raise NotImplementedError(event_type)
+                    else:
+                        await inserter(db, group)
             except ForeignKeyViolationError:
                 raise UnknownClient()
