@@ -4,7 +4,10 @@ services:
 
   app:
     image: "${DOCKER_IMAGE}"
-    build: .
+    build:
+      context: .
+      args:
+        PYTHON_VERSION: "${PYTHON_VERSION}"
     depends_on:
       - db
     environment:
