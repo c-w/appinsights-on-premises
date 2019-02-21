@@ -68,18 +68,21 @@ async def _insert_events(db: Database, telemetries: Iterable[dict]):
             client,
             created_at,
             name,
-            properties
+            properties,
+            _original
         ) VALUES (
             $1::UUID,
             $2,
             $3,
-            $4
+            $4,
+            $5
         )
     ''', [(
         telemetry['iKey'],
         parse(telemetry['time']),
         telemetry['data']['baseData']['name'],
         dumps(telemetry['data']['baseData'].get('properties', {})),
+        dumps(telemetry)
     ) for telemetry in telemetries])
 
 
@@ -89,7 +92,31 @@ async def _insert_logs(db: Database, telemetries: Iterable[dict]):
             client,
             created_at,
             message,
-            severity
+            severity,
+            _original
+        ) VALUES (
+            $1::UUID,
+            $2,
+            $3,
+            $4,
+            $5
+        )
+    ''', [(
+        telemetry['iKey'],
+        parse(telemetry['time']),
+        telemetry['data']['baseData']['message'],
+        telemetry['data']['baseData']['severityLevel'],
+        dumps(telemetry)
+    ) for telemetry in telemetries])
+
+
+async def _insert_exceptions(db: Database, telemetries: Iterable[dict]):
+    await db.executemany('''
+        INSERT INTO exceptions (
+            client,
+            created_at,
+            exceptions,
+            _original
         ) VALUES (
             $1::UUID,
             $2,
@@ -99,26 +126,8 @@ async def _insert_logs(db: Database, telemetries: Iterable[dict]):
     ''', [(
         telemetry['iKey'],
         parse(telemetry['time']),
-        telemetry['data']['baseData']['message'],
-        telemetry['data']['baseData']['severityLevel']
-    ) for telemetry in telemetries])
-
-
-async def _insert_exceptions(db: Database, telemetries: Iterable[dict]):
-    await db.executemany('''
-        INSERT INTO exceptions (
-            client,
-            created_at,
-            exceptions
-        ) VALUES (
-            $1::UUID,
-            $2,
-            $3
-        )
-    ''', [(
-        telemetry['iKey'],
-        parse(telemetry['time']),
-        dumps(telemetry['data']['baseData'].get('exceptions', []))
+        dumps(telemetry['data']['baseData'].get('exceptions', [])),
+        dumps(telemetry)
     ) for telemetry in telemetries])
 
 
@@ -131,7 +140,8 @@ async def _insert_requests(db: Database, requests: Iterable[dict]):
             url,
             status_code,
             success,
-            duration
+            duration,
+            _original
         ) VALUES (
             $1::UUID,
             $2,
@@ -139,7 +149,8 @@ async def _insert_requests(db: Database, requests: Iterable[dict]):
             $4,
             $5,
             $6,
-            $7
+            $7,
+            $8
         )
     ''', [(
         request['iKey'],
@@ -148,7 +159,8 @@ async def _insert_requests(db: Database, requests: Iterable[dict]):
         request['data']['baseData']['url'],
         _nullsafe(int, request['data']['baseData'].get('responseCode')),
         request['data']['baseData'].get('success'),
-        _nullsafe(_to_interval, request['data']['baseData'].get('duration'))
+        _nullsafe(_to_interval, request['data']['baseData'].get('duration')),
+        dumps(request)
     ) for request in requests])
 
 
