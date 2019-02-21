@@ -21,3 +21,13 @@ CREATE TABLE IF NOT EXISTS exceptions (
   created_at TIMESTAMP WITH TIME ZONE NOT NULL,
   exceptions JSONB NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS requests (
+  client UUID REFERENCES clients,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  name TEXT NOT NULL,
+  url TEXT NOT NULL,
+  status_code SMALLINT,
+  success BOOLEAN,
+  duration INTERVAL
+);

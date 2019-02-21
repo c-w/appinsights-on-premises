@@ -1,3 +1,4 @@
+from datetime import timedelta
 from itertools import groupby
 from operator import itemgetter
 from pathlib import Path
@@ -19,6 +20,7 @@ from app.config import config
 from app.domain.appinsights import APPINSIGHTS_EVENT
 from app.domain.appinsights import APPINSIGHTS_EXCEPTION
 from app.domain.appinsights import APPINSIGHTS_LOG
+from app.domain.appinsights import APPINSIGHTS_REQUEST
 from app.domain.exceptions import DuplicateClient
 from app.domain.exceptions import UnknownClient
 
@@ -36,6 +38,27 @@ async def _get_db_pool() -> Pool:
         host=config.DATABASE_URL.hostname,
         port=config.DATABASE_URL.port,
         ssl=config.DATABASE_OPTIONS.get('ssl') == 'True',
+    )
+
+
+def _nullsafe(converter, data):
+    return converter(data) if data is not None else None
+
+
+def _to_interval(interval: str) -> timedelta:
+    """
+    >>> _to_interval('00:00:00.223').total_seconds()
+    0.223
+    >>> _to_interval('01:02:03.40').total_seconds()
+    3723.04
+    """
+    rest, milliseconds = interval.split('.')
+    hours, minutes, seconds = rest.split(':')
+    return timedelta(
+        hours=int(hours),
+        minutes=int(minutes),
+        seconds=int(seconds),
+        milliseconds=int(milliseconds),
     )
 
 
@@ -99,6 +122,36 @@ async def _insert_exceptions(db: Database, telemetries: Iterable[dict]):
     ) for telemetry in telemetries])
 
 
+async def _insert_requests(db: Database, requests: Iterable[dict]):
+    await db.executemany('''
+        INSERT INTO requests (
+            client,
+            created_at,
+            name,
+            url,
+            status_code,
+            success,
+            duration
+        ) VALUES (
+            $1::UUID,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6,
+            $7
+        )
+    ''', [(
+        request['iKey'],
+        parse(request['time']),
+        request['data']['baseData']['name'],
+        request['data']['baseData']['url'],
+        _nullsafe(int, request['data']['baseData'].get('responseCode')),
+        request['data']['baseData'].get('success'),
+        _nullsafe(_to_interval, request['data']['baseData'].get('duration'))
+    ) for request in requests])
+
+
 async def create():
     db = await _get_db_pool()
 
@@ -137,6 +190,8 @@ async def ingest(telemetries: Iterable[dict]):
                         await _insert_logs(db, group)
                     elif event_type == APPINSIGHTS_EXCEPTION:
                         await _insert_exceptions(db, group)
+                    elif event_type == APPINSIGHTS_REQUEST:
+                        await _insert_requests(db, group)
                     else:
                         raise NotImplementedError(event_type)
             except ForeignKeyViolationError:
