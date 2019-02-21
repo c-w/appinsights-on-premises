@@ -8,7 +8,7 @@ This repository contains a service that's API compatible with [Azure AppInsights
 but that stores the telemetry in a database. This enables developers to use AppInsights client SDKs but
 keep all data on-premises.
 
-## Set up
+## Setup
 
 To run the service, execute the following commands:
 
