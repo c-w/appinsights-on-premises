@@ -1,6 +1,8 @@
 from importlib import import_module
 from os import cpu_count
 from os import environ
+from pathlib import Path
+from typing import Iterable
 from typing import Optional
 from urllib.parse import ParseResult
 from urllib.parse import parse_qs
@@ -43,6 +45,13 @@ class _Config:
     def DATABASE(self):
         module = 'app.database.{}'.format(self.DATABASE_URL.scheme)
         return import_module(module)
+
+    @property
+    def DATABASE_INIT(self) -> Iterable[Path]:
+        for path in self._env.get('DATABASE_INIT', '').split(';'):
+            path = Path(path)
+            if path.is_file():
+                yield path
 
     def update(self, values: dict):
         for key, value in values.items():

@@ -7,6 +7,7 @@ from typing import Optional
 from typing import Union
 from uuid import uuid4
 
+from aiofiles import open as open_async
 from async_lru import alru_cache
 from asyncpg import Connection
 from asyncpg import ForeignKeyViolationError
@@ -175,13 +176,17 @@ _INSERTERS = {
 async def create():
     db = await _get_db_pool()
 
-    schema_file = Path(__file__).parent / 'postgres.sql'
-    with schema_file.open(encoding='utf-8') as fobj:
-        schema = fobj.read()
+    sql_paths = [Path(__file__).parent / 'postgres.sql']
+    sql_paths.extend(config.DATABASE_INIT)
 
-    for statement in schema.split(';'):
-        if statement.strip():
-            await db.execute(statement)
+    for sql_path in sql_paths:
+        async with open_async(str(sql_path), encoding='utf-8') as fobj:
+            sql = await fobj.read()
+
+        for statement in sql.split(';'):
+            statement = statement.strip()
+            if statement:
+                await db.execute(statement)
 
 
 async def register(client: Optional[str] = None) -> str:
