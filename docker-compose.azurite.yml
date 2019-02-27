@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+
+  app:
+    depends_on:
+      - azurite
+    environment:
+      DATABASE_URL: "libcloud://${AZURITE_ACCOUNT}:${AZURITE_SECRET}@azure_blobs?endpoint=azurite:10000&ssl=False"
+
+  azurite:
+    image: arafato/azurite:2.6.5
+    environment:
+      executable: blob
+    ports:
+      - ${AZURITE_PORT}:10000

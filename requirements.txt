@@ -1,3 +1,4 @@
+https://github.com/CatalystCode/libcloud/archive/1037_fix-azurite.zip
 aiofiles==0.4.0
 applicationinsights==0.11.7
 async_lru==1.0.2
