@@ -25,10 +25,9 @@ def cli():
     from argparse import ArgumentParser
     from argparse import FileType
     from sys import stdout
-    from urllib.parse import urlunparse
 
     parser = ArgumentParser(description=__doc__)
-    parser.add_argument('--database_url', default=urlunparse(config.DATABASE_URL))
+    parser.add_argument('--database_url', default=config.DATABASE_URL.raw)
     parser.add_argument('--ikey')
     parser.add_argument('--outfile', type=FileType('w', encoding='utf-8'), default=stdout)
     args = parser.parse_args()

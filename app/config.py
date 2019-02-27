@@ -1,12 +1,24 @@
+from collections import namedtuple
 from importlib import import_module
 from os import cpu_count
 from os import environ
 from pathlib import Path
 from typing import Iterable
 from typing import Optional
-from urllib.parse import ParseResult
-from urllib.parse import parse_qs
-from urllib.parse import urlparse
+from urllib.parse import unquote
+
+from furl import furl
+
+DatabaseUrl = namedtuple('DatabaseUrl', (
+    'host',
+    'options',
+    'password',
+    'path',
+    'port',
+    'scheme',
+    'username',
+    'raw',
+))
 
 
 # noinspection PyPep8Naming
@@ -31,15 +43,17 @@ class _Config:
         return int(self._env.get('WORKERS', str(cpu_count())))
 
     @property
-    def DATABASE_URL(self) -> ParseResult:
-        return urlparse(self._env.get('DATABASE_URL', ''))
-
-    @property
-    def DATABASE_OPTIONS(self) -> dict:
-        return {
-            key: values[0] if values else None
-            for key, values in parse_qs(self.DATABASE_URL.query).items()
-        }
+    def DATABASE_URL(self) -> DatabaseUrl:
+        url = furl(self._env.get('DATABASE_URL', ''))
+        return DatabaseUrl(
+            host=url.host,
+            options=dict(url.args),
+            password=unquote(url.password) if url.password else None,
+            path=str(url.path),
+            port=url.port,
+            scheme=url.scheme,
+            username=url.username,
+            raw=str(url))
 
     @property
     def DATABASE(self):

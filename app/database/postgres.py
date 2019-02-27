@@ -31,14 +31,14 @@ Database = Union[Connection, Pool]
 @alru_cache(maxsize=1)
 async def _get_db_pool() -> Pool:
     return await create_pool(
-        min_size=int(config.DATABASE_OPTIONS.get('pool_min_size') or '1'),
-        max_size=int(config.DATABASE_OPTIONS.get('pool_max_size') or '2'),
-        database=config.DATABASE_URL.path[1:],
+        min_size=int(config.DATABASE_URL.options.get('pool_min_size') or '1'),
+        max_size=int(config.DATABASE_URL.options.get('pool_max_size') or '2'),
+        database=config.DATABASE_URL.path.lstrip('/'),
         user=config.DATABASE_URL.username,
         password=config.DATABASE_URL.password,
-        host=config.DATABASE_URL.hostname,
+        host=config.DATABASE_URL.host,
         port=config.DATABASE_URL.port,
-        ssl=config.DATABASE_OPTIONS.get('ssl') == 'True',
+        ssl=config.DATABASE_URL.options.get('ssl') == 'True',
     )
 
 

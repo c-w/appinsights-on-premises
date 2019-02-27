@@ -1,7 +1,6 @@
-from urllib.parse import ParseResult
-
+from furl import furl
 import wait
 
 
-def wait_for(url: ParseResult):
-    wait.tcp.open(url.port or 80, url.hostname or 'localhost')
+def wait_for(url: furl):
+    wait.tcp.open(url.port, url.host)
