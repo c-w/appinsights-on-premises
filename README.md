@@ -18,7 +18,7 @@ To run the service, execute the following commands:
 export APPINSIGHTS_INSTRUMENTATIONKEY=553161ed-0c6b-41a8-973e-77a411391be5
 
 # run the database and appinsights server
-docker-compose -f docker-compose.yml -f docker-compose.postgres.yml up --build -d
+docker-compose -f docker-compose.yml -f backends/postgres.yml up --build -d
 
 # send sample telemetry to the appinsights server
 docker-compose exec app python -m app.tools.generate_telemetry --ikey "${APPINSIGHTS_INSTRUMENTATIONKEY}"
