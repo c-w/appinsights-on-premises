@@ -1,3 +1,13 @@
+"""
+Database backend that stores the telemetry in PostgreSQL.
+
+The backend leverages JSONB to enable arbitrary queries on the telemetry.
+
+The DATABASE_URL is in the format:
+
+    postgres://<user>:<password>@<db_host>:<db_port>/<db_name>
+
+"""
 from datetime import timedelta
 from itertools import groupby
 from operator import itemgetter
