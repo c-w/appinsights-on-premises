@@ -11,6 +11,9 @@ env:
     - PYTHON_VERSION=3.5 BACKEND=azurite
     - PYTHON_VERSION=3.6 BACKEND=azurite
     - PYTHON_VERSION=3.7 BACKEND=azurite
+    - PYTHON_VERSION=3.5 BACKEND=iotedge
+    - PYTHON_VERSION=3.6 BACKEND=iotedge
+    - PYTHON_VERSION=3.7 BACKEND=iotedge
 
 before_install:
   - export DOCKER_IMAGE="${DOCKER_USER:-dev}/appinsights-on-premises:${TRAVIS_TAG:-dev}"

@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+
+  app:
+    depends_on:
+      - iotedge
+    environment:
+      DATABASE_URL: "libcloud://${IOTEDGE_ACCOUNT}:${IOTEDGE_SECRET}@azure_blobs?endpoint=iotedge:11002&ssl=False"
+
+  iotedge:
+    image: mcr.microsoft.com/azure-blob-storage:latest
+    environment:
+      LOCAL_STORAGE_ACCOUNT_NAME: ${IOTEDGE_ACCOUNT}
+      LOCAL_STORAGE_ACCOUNT_KEY: ${IOTEDGE_SECRET}
+    ports:
+      - ${IOTEDGE_PORT}:11002
