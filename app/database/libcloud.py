@@ -12,7 +12,7 @@ The DATABASE_URL is in the format:
 
 """
 from functools import lru_cache
-from io import StringIO
+from io import BytesIO
 from json import dumps
 from typing import Iterable
 from typing import Optional
@@ -85,7 +85,7 @@ async def ingest(telemetries: Iterable[dict]):
 
     for container, telemetry in zip(containers, telemetries):
         container.upload_object_via_stream(
-            StringIO(dumps(telemetry)),
+            BytesIO(dumps(telemetry).encode('utf-8')),
             object_name='{folder}/{prefix}/{name}.json'.format(
                 folder=telemetry['name'],
                 prefix=parse(telemetry['time']).strftime(
