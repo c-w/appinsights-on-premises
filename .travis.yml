@@ -5,11 +5,12 @@ services:
 
 env:
   matrix:
-    - PYTHON_VERSION=3.5
-    - PYTHON_VERSION=3.6
-    - PYTHON_VERSION=3.7
-    - BACKEND=azurite
-    - BACKEND=postgres
+    - PYTHON_VERSION=3.5 BACKEND=postgres
+    - PYTHON_VERSION=3.6 BACKEND=postgres
+    - PYTHON_VERSION=3.7 BACKEND=postgres
+    - PYTHON_VERSION=3.5 BACKEND=azurite
+    - PYTHON_VERSION=3.6 BACKEND=azurite
+    - PYTHON_VERSION=3.7 BACKEND=azurite
 
 before_install:
   - export DOCKER_IMAGE="${DOCKER_USER:-dev}/appinsights-on-premises:${TRAVIS_TAG:-dev}"
