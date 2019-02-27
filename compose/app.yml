@@ -5,7 +5,7 @@ services:
   app:
     image: "${DOCKER_IMAGE}"
     build:
-      context: .
+      context: ..
       args:
         PYTHON_VERSION: "${PYTHON_VERSION}"
     environment:

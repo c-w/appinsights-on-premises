@@ -21,7 +21,7 @@ env:
 before_install:
   - export PYTHON_VERSION="${TRAVIS_PYTHON_VERSION}"
   - export DOCKER_IMAGE="${DOCKER_USER:-dev}/appinsights-on-premises:${TRAVIS_TAG:-dev}"
-  - docker_compose() { docker-compose -f docker-compose.yml -f backends/${BACKEND}.yml $*; }
+  - docker_compose() { docker-compose -f compose/app.yml -f compose/backends/${BACKEND}.yml $*; }
 
 install:
   - docker_compose build
