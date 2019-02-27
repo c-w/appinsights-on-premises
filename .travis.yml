@@ -8,24 +8,26 @@ env:
     - PYTHON_VERSION=3.5
     - PYTHON_VERSION=3.6
     - PYTHON_VERSION=3.7
+    - BACKEND=postgres
 
 before_install:
   - export DOCKER_IMAGE="${DOCKER_USER:-dev}/appinsights-on-premises:${TRAVIS_TAG:-dev}"
+  - docker_compose() { docker-compose -f docker-compose.yml -f docker-compose.${BACKEND}.yml $*; }
 
 install:
-  - docker-compose build
+  - docker_compose build
 
 before_script:
   - export POSTGRES_PORT=8888
   - export APP_PORT=8080
   - export APPINSIGHTS_INSTRUMENTATIONKEY="$(python3 -c 'import uuid; print(uuid.uuid4())')"
-  - docker-compose up -d
+  - docker_compose up -d
 
 script:
-  - docker-compose run app python -m app.tools.generate_telemetry --ikey "${APPINSIGHTS_INSTRUMENTATIONKEY}"
+  - docker_compose run app python -m app.tools.generate_telemetry --ikey "${APPINSIGHTS_INSTRUMENTATIONKEY}"
 
 after_script:
-  - docker-compose down --volumes --remove-orphans
+  - docker_compose down --volumes --remove-orphans
 
 before_deploy:
   - echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USER}" --password-stdin
@@ -36,4 +38,4 @@ deploy:
     on:
       repo: CatalystCode/appinsights-on-premises
       tags: true
-      condition: ${PYTHON_VERSION} = 3.7
+      condition: ${PYTHON_VERSION}-${BACKEND} = 3.7-postgres
