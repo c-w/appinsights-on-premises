@@ -5,14 +5,13 @@ from logging import getLogger
 from random import choice
 from random import gauss
 from string import ascii_letters
-from urllib.parse import urlparse
 
+import wait
 from applicationinsights import TelemetryClient
 from applicationinsights.channel import SynchronousQueue
 from applicationinsights.channel import SynchronousSender
 from applicationinsights.channel import TelemetryChannel
-
-from app.tools import wait_for
+from furl import furl
 
 LOG = getLogger(__name__)
 
@@ -119,8 +118,8 @@ def send_requests(client: TelemetryClient, num_requests: int):
         LOG.info('sent request %r', request)
 
 
-def main(endpoint: str, ikey: str, send_config: SendConfig):
-    wait_for(urlparse(endpoint))
+def main(endpoint: furl, ikey: str, send_config: SendConfig):
+    wait.tcp.open(endpoint.port, endpoint.host)
 
     sender = NoRetrySender(endpoint)
     queue = SynchronousQueue(sender)
@@ -142,7 +141,7 @@ def cli():
 
     parser = ArgumentParser(description=__doc__)
     parser.add_argument('--ikey', required=True)
-    parser.add_argument('--endpoint', default=getenv('APP_URL'))
+    parser.add_argument('--endpoint', default=getenv('APP_URL', ''))
     parser.add_argument('--num_events', type=int, default=10)
     parser.add_argument('--num_traces', type=int, default=10)
     parser.add_argument('--num_exceptions', type=int, default=10)
@@ -155,7 +154,7 @@ def cli():
     if args.random_seed is not None:
         seed(args.random_seed)
 
-    main(args.endpoint, args.ikey, SendConfig(
+    main(furl(args.endpoint), args.ikey, SendConfig(
         num_events=args.num_events,
         num_traces=args.num_traces,
         num_exceptions=args.num_exceptions,

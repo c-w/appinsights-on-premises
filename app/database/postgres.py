@@ -7,6 +7,7 @@ from typing import Optional
 from typing import Union
 from uuid import uuid4
 
+import wait
 from aiofiles import open as open_async
 from async_lru import alru_cache
 from asyncpg import Connection
@@ -217,3 +218,7 @@ async def ingest(telemetries: Iterable[dict]):
                         await inserter(db, group)
             except ForeignKeyViolationError:
                 raise UnknownClient()
+
+
+def wait_until_ready():
+    wait.tcp.open(config.DATABASE_URL.port, config.DATABASE_URL.host)

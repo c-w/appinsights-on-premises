@@ -6,12 +6,11 @@ from syncer import sync
 
 from app.config import config
 from app.domain.exceptions import DuplicateClient
-from app.tools import wait_for
 
 
 @sync
 async def main(ikey: Optional[str], outfile: IO[str]):
-    wait_for(config.DATABASE_URL)
+    config.DATABASE.wait_until_ready()
     try:
         client = await config.DATABASE.register(ikey)
     except DuplicateClient:

@@ -2,12 +2,11 @@
 from syncer import sync
 
 from app.config import config
-from app.tools import wait_for
 
 
 @sync
 async def main():
-    wait_for(config.DATABASE_URL)
+    config.DATABASE.wait_until_ready()
     await config.DATABASE.create()
 
 
