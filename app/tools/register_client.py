@@ -1,4 +1,4 @@
-"""Script to register a client"""
+"""Script to register a client."""
 from typing import IO
 from typing import Optional
 

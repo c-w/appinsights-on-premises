@@ -49,6 +49,8 @@ def _nullsafe(converter, data):
 
 def _to_interval(interval: str) -> timedelta:
     """
+    Parse a time string to a time delta.
+
     >>> _to_interval('00:00:00.223').total_seconds()
     0.223
     >>> _to_interval('01:02:03.40').total_seconds()

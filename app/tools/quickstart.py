@@ -1,4 +1,4 @@
-"""Script to boostrap the telemetry server start process"""
+"""Script to boostrap the telemetry server start process."""
 from os import getenv
 from subprocess import check_call
 from sys import executable

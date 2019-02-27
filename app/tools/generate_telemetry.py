@@ -1,4 +1,4 @@
-"""Script to send random telemetry to Application Insights"""
+"""Script to send random telemetry to Application Insights."""
 from collections import namedtuple
 from datetime import datetime
 from logging import getLogger

@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir -r requirements-dev.txt
 COPY . .
 
 RUN flake8 app
+RUN pydocstyle app
 RUN isort --quiet --check-only --recursive app
 RUN mypy --no-incremental app
 

@@ -1,4 +1,4 @@
-"""Script to run the telemetry server"""
+"""Script to run the telemetry server."""
 from syncer import sync
 
 from app.config import config
