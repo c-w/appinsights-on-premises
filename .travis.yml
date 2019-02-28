@@ -24,6 +24,7 @@ before_install:
   - docker_compose() { docker-compose -f compose/app.yml -f compose/backends/${BACKEND}.yml $*; }
 
 install:
+  - docker_compose pull || true
   - docker_compose build
 
 before_script:
