@@ -14,16 +14,11 @@ keep all data on-premises.
 To run the service, execute the following commands:
 
 ```bash
-# define the appinsights client to use, can be any guid
-export APPINSIGHTS_INSTRUMENTATIONKEY=553161ed-0c6b-41a8-973e-77a411391be5
-
 # run the database and appinsights server
-docker-compose -f compose/app.yml -f compose/backends/postgres.yml \
-  up --build -d
+make build start
 
 # send sample telemetry to the appinsights server
-docker-compose -f compose/app.yml -f compose/backends/postgres.yml \
-  exec app python -m app.tools.generate_telemetry --ikey "${APPINSIGHTS_INSTRUMENTATIONKEY}"
+make tests
 ```
 
 ## Usage
