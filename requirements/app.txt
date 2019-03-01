@@ -1,8 +1,5 @@
-https://github.com/CatalystCode/libcloud/archive/1037_fix-azurite.zip
-aiofiles==0.4.0
 applicationinsights==0.11.7
 async_lru==1.0.2
-asyncpg==0.18.3
 furl==2.0.0
 python-dateutil==2.7.5
 sanic==18.12.0

@@ -1,0 +1,1 @@
+https://github.com/CatalystCode/libcloud/archive/1037_fix-azurite.zip
