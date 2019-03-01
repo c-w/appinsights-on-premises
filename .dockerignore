@@ -2,4 +2,4 @@
 !app/
 !requirements/
 !setup.cfg
-__pycache__/
+**/__pycache__/
