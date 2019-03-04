@@ -187,19 +187,18 @@ _INSERTERS = {
 
 
 async def create():
-    db = await _get_db_pool()
+    pool = await _get_db_pool()
 
     sql_paths = [Path(__file__).parent / 'postgres.sql']
     sql_paths.extend(config.DATABASE_INIT)
 
-    for sql_path in sql_paths:
-        async with open_async(str(sql_path), encoding='utf-8') as fobj:
-            sql = await fobj.read()
+    async with pool.acquire() as db:
+        async with db.transaction():
+            for sql_path in sql_paths:
+                async with open_async(str(sql_path), encoding='utf-8') as fobj:
+                    sql = await fobj.read()
 
-        for statement in sql.split(';'):
-            statement = statement.strip()
-            if statement:
-                await db.execute(statement)
+                await db.execute(sql)
 
 
 async def register(client: Optional[str] = None) -> str:
