@@ -1,6 +1,5 @@
 from collections import namedtuple
 from importlib import import_module
-from os import cpu_count
 from os import environ
 from pathlib import Path
 from typing import Iterable
@@ -40,7 +39,7 @@ class _Config:
 
     @property
     def WORKERS(self) -> int:
-        return int(self._env.get('WORKERS', str(cpu_count())))
+        return int(self._env.get('WORKERS', '2'))
 
     @property
     def DATABASE_URL(self) -> DatabaseUrl:
