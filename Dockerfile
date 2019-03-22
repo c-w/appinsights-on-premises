@@ -5,16 +5,16 @@ FROM python:${PYTHON_VERSION} AS builder
 WORKDIR /app
 
 COPY requirements/app.txt requirements-app.txt
-RUN pip install --no-cache-dir -r requirements-app.txt
-RUN pip wheel --no-cache-dir -r requirements-app.txt --wheel-dir /deps
+RUN pip install -r requirements-app.txt \
+ && pip wheel -r requirements-app.txt --wheel-dir /deps
 
 COPY requirements/dev.txt requirements-dev.txt
-RUN pip install --no-cache-dir -r requirements-dev.txt
+RUN pip install -r requirements-dev.txt
 
 ARG CONNECTOR=postgres
 COPY requirements/connectors/${CONNECTOR}.txt requirements-connector.txt
-RUN pip install --no-cache-dir -r requirements-connector.txt
-RUN pip wheel --no-cache-dir -r requirements-connector.txt --wheel-dir /deps
+RUN pip install -r requirements-connector.txt \
+ && pip wheel -r requirements-connector.txt --wheel-dir /deps
 
 COPY . .
 
