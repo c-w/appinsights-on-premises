@@ -10,8 +10,9 @@ from app.tools import run_server
 if __name__ == '__main__':
     check_call([executable, '-m', create_db.__name__])
 
-    ikey = getenv('APPINSIGHTS_INSTRUMENTATIONKEY')
-    if ikey:
-        check_call([executable, '-m', register_client.__name__, '--ikey', ikey])
+    ikeys = getenv('APPINSIGHTS_INSTRUMENTATIONKEY')
+    if ikeys:
+        for ikey in ikeys.split(','):
+            check_call([executable, '-m', register_client.__name__, '--ikey', ikey])
 
     run_server.main()

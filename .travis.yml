@@ -32,7 +32,8 @@ install:
   - make build
 
 before_script:
-  - export APPINSIGHTS_INSTRUMENTATIONKEY="$(python3 -c 'import uuid; print(uuid.uuid4())')"
+  - export IKEY1="$(python3 -c 'import uuid; print(uuid.uuid4())')"
+  - export IKEY2="$(python3 -c 'import uuid; print(uuid.uuid4())')"
   - make start
 
 script:

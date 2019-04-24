@@ -1,7 +1,9 @@
 .EXPORT_ALL_VARIABLES:
 
-APPINSIGHTS_INSTRUMENTATIONKEY ?= 553161ed-0c6b-41a8-973e-77a411391be5
 BACKEND ?= postgres
+IKEY1 ?= 553161ed-0c6b-41a8-973e-77a411391be5
+IKEY2 ?= c3dd7bdf-b6eb-4b72-868b-64d5ccb3b4f7
+APPINSIGHTS_INSTRUMENTATIONKEY := $(IKEY1),$(IKEY2)
 
 docker_compose := docker-compose -f compose/app.yml -f compose/backends/$(BACKEND).yml
 
@@ -16,7 +18,8 @@ stop:
 	$(docker_compose) down --volumes --remove-orphans
 
 tests:
-	$(docker_compose) run app python -m app.tools.generate_telemetry --ikey "$(APPINSIGHTS_INSTRUMENTATIONKEY)"
+	$(docker_compose) run app python -m app.tools.generate_telemetry --ikey "$(IKEY1)"
+	$(docker_compose) run app python -m app.tools.generate_telemetry --ikey "$(IKEY2)"
 
 logs:
 	$(docker_compose) logs -f
