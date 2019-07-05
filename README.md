@@ -1,6 +1,6 @@
 # AppInsights on-premises
 
-[![Travis CI status](https://api.travis-ci.org/CatalystCode/appinsights-on-premises.svg?branch=master)](https://travis-ci.org/CatalystCode/appinsights-on-premises)
+[![Travis CI status](https://api.travis-ci.org/c-w/appinsights-on-premises.svg?branch=master)](https://travis-ci.org/c-w/appinsights-on-premises)
 [![DockerHub tag](https://images.microbadger.com/badges/version/cwolff/appinsights-on-premises.svg)](https://hub.docker.com/r/cwolff/appinsights-on-premises/tags)
 
 ## What's this?

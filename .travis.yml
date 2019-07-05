@@ -46,6 +46,5 @@ deploy:
   - provider: script
     script: make release
     on:
-      repo: CatalystCode/appinsights-on-premises
       tags: true
       condition: ${PYTHON_VERSION} = 3.7
