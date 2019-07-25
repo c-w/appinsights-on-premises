@@ -25,15 +25,18 @@ RUN mypy --no-incremental app
 
 FROM python:${PYTHON_VERSION}-slim AS runtime
 
+RUN useradd -ms /bin/sh appinsights
+
 COPY --from=builder /deps /deps
 RUN pip install --no-cache-dir /deps/*.whl
 
-COPY --from=builder /app /app
+COPY --from=builder --chown=appinsights:appinsights /app /app
 
 WORKDIR /app
-ENV PORT="80"
+ENV PORT="8000"
 ENV HOST="0.0.0.0"
 
 EXPOSE ${PORT}
+USER appinsights
 
 CMD ["python", "-m", "app.tools.quickstart"]
