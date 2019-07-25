@@ -1,3 +1,6 @@
+import gzip
+import json
+
 from sanic import Sanic
 from sanic import response
 from sanic.request import Request
@@ -9,9 +12,22 @@ from app.domain.exceptions import UnknownClient
 app = Sanic(__name__)
 
 
+@app.middleware
+async def decompress_request(request):
+    if request.headers.get('content-encoding') == 'gzip':
+        request.body = gzip.decompress(request.body)
+
+
 @app.route('/', methods=['POST'])
 async def ingest(request: Request) -> HTTPResponse:
-    telemetries = request.json or []
+    content_type = request.headers.get('content-type')
+
+    if 'application/json' in content_type:
+        telemetries = request.json
+    elif 'application/x-json-stream' in content_type:
+        telemetries = [json.loads(line) for line in request.body.split(b'\n')]
+    else:
+        return response.json({'error': 'unknown content-type'}, status=400)
 
     try:
         await config.DATABASE.ingest(telemetries)
