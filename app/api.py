@@ -5,11 +5,13 @@ from sanic import Sanic
 from sanic import response
 from sanic.request import Request
 from sanic.response import HTTPResponse
+from sanic_cors import CORS
 
 from app.config import config
 from app.domain.exceptions import UnknownClient
 
 app = Sanic(__name__)
+CORS(app, automatic_options=True)
 
 
 @app.middleware
