@@ -39,4 +39,4 @@ ENV HOST="0.0.0.0"
 EXPOSE ${PORT}
 USER appinsights
 
-CMD ["python", "-m", "app.tools.quickstart"]
+CMD ["python3", "-m", "app.tools.quickstart"]
