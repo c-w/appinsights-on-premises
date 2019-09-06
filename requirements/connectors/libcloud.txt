@@ -1,1 +1,1 @@
-https://github.com/apache/libcloud/archive/70830dfa642625c3372a5bd5019d9affcfcc0789.zip
+apache-libcloud>=2.6.0
