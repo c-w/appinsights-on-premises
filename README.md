@@ -9,6 +9,12 @@ This repository contains a service that's API compatible with [Azure AppInsights
 but that stores the telemetry in a database. This enables developers to use AppInsights client SDKs but
 keep all data on-premises.
 
+The service has been tested with the following AppInsights client SDKs:
+
+- [Python](https://github.com/Microsoft/ApplicationInsights-Python)
+- [NodeJS](https://github.com/Microsoft/ApplicationInsights-node.js)
+- [Javascript](https://github.com/Microsoft/ApplicationInsights-JS)
+
 ## Setup
 
 To run the service, execute the following commands:
