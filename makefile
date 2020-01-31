@@ -27,3 +27,4 @@ logs:
 release:
 	@docker login --username "$(DOCKER_USER)" --password "$(DOCKER_PASSWORD)"
 	docker push "$(DOCKER_IMAGE)"
+	curl -XPOST "https://hooks.microbadger.com/images/cwolff/appinsights-on-premises/$(MICROBADGER_TOKEN)"
