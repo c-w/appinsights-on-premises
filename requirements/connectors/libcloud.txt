@@ -1,1 +1,1 @@
-apache-libcloud>=2.6.0
+apache-libcloud>=2.8.0

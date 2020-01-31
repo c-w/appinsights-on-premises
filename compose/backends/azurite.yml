@@ -12,8 +12,9 @@ services:
       DATABASE_URL: "libcloud://${AZURITE_ACCOUNT}:${AZURITE_SECRET}@azure_blobs?endpoint=azurite:10000&ssl=False"
 
   azurite:
-    image: arafato/azurite:2.6.5
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    command: ["azurite-blob", "--blobHost=0.0.0.0"]
     environment:
-      executable: blob
+      AZURITE_ACCOUNTS: "${AZURITE_ACCOUNT}:${AZURITE_SECRET};"
     ports:
       - ${AZURITE_PORT}:10000
