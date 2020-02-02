@@ -35,7 +35,7 @@ def _get_driver_kwargs():
     return {
         'key': config.DATABASE_URL.username,
         'secret': config.DATABASE_URL.password,
-        'host': config.DATABASE_URL.options.get('endpoint'),
+        'host': config.DATABASE_URL.options.get('endpoint') or None,
         'secure': config.DATABASE_URL.options.get('ssl') != 'False',
     }
 
