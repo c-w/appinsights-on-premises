@@ -48,16 +48,12 @@ def _get_driver() -> StorageDriver:
     return driver_class(**driver_kwargs)
 
 
-def _client_to_container_name(client: str) -> str:
-    return client.replace('-', '')
-
-
 async def create():
     pass
 
 
 async def register(client: Optional[str] = None) -> str:
-    client = _client_to_container_name(client or str(uuid4()))
+    client = client or str(uuid4())
 
     storage = _get_driver()
 
@@ -75,9 +71,8 @@ async def ingest(telemetries: Iterable[dict]):
 
     containers = []
     for telemetry in telemetries:
-        client = _client_to_container_name(telemetry['iKey'])
         try:
-            container = storage.get_container(client)
+            container = storage.get_container(telemetry['iKey'])
         except ContainerDoesNotExistError:
             raise UnknownClient()
         else:
