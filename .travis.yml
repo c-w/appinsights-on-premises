@@ -3,6 +3,7 @@ language: python
 python:
   - 3.6
   - 3.7
+  - 3.8
 
 dist: xenial
 
@@ -46,4 +47,4 @@ deploy:
     script: make release
     on:
       tags: true
-      condition: ${PYTHON_VERSION} = 3.7
+      condition: ${PYTHON_VERSION} = 3.8
