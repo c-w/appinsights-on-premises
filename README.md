@@ -1,6 +1,7 @@
 # AppInsights on-premises
 
 [![Travis CI status](https://api.travis-ci.org/c-w/appinsights-on-premises.svg?branch=master)](https://travis-ci.org/c-w/appinsights-on-premises)
+[![Dependency status](https://pyup.io/repos/github/c-w/appinsights-on-premises/shield.svg)](https://pyup.io/repos/github/c-w/appinsights-on-premises/)
 [![DockerHub tag](https://images.microbadger.com/badges/version/cwolff/appinsights-on-premises.svg)](https://hub.docker.com/r/cwolff/appinsights-on-premises/tags)
 
 ## What's this?
@@ -46,3 +47,5 @@ client = TelemetryClient(ikey, TelemetryChannel(queue=AsynchronousQueue(Asynchro
 # now use the telemetry client as normal, e.g.:
 client.track_event('my_event', {'some_property': 'a value'})
 ```
+
+[ ~ Dependencies scanned by PyUp.io ~ ]
