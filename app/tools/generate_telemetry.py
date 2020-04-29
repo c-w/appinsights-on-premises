@@ -6,12 +6,13 @@ from random import choice
 from random import gauss
 from string import ascii_letters
 
-import wait
 from applicationinsights import TelemetryClient
 from applicationinsights.channel import SynchronousQueue
 from applicationinsights.channel import SynchronousSender
 from applicationinsights.channel import TelemetryChannel
 from furl import furl
+
+from app.utils import wait_for_port
 
 LOG = getLogger(__name__)
 
@@ -119,7 +120,7 @@ def send_requests(client: TelemetryClient, num_requests: int):
 
 
 def main(endpoint: furl, ikey: str, send_config: SendConfig):
-    wait.tcp.open(endpoint.port, endpoint.host)
+    wait_for_port(port=endpoint.port, host=endpoint.host)
 
     sender = NoRetrySender(endpoint)
     queue = SynchronousQueue(sender)

@@ -17,7 +17,6 @@ from typing import Optional
 from typing import Union
 from uuid import uuid4
 
-import wait
 from aiofiles import open as open_async
 from async_lru import alru_cache
 from asyncpg import Connection
@@ -35,6 +34,7 @@ from app.domain.appinsights import APPINSIGHTS_LOG
 from app.domain.appinsights import APPINSIGHTS_REQUEST
 from app.domain.exceptions import DuplicateClient
 from app.domain.exceptions import UnknownClient
+from app.utils import wait_for_port
 
 Database = Union[Connection, Pool]
 
@@ -232,4 +232,4 @@ async def ingest(telemetries: Iterable[dict]):
 
 
 def wait_until_ready():
-    wait.tcp.open(config.DATABASE_URL.port, config.DATABASE_URL.host)
+    wait_for_port(port=config.DATABASE_URL.port, host=config.DATABASE_URL.host)

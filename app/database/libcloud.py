@@ -18,7 +18,6 @@ from typing import Iterable
 from typing import Optional
 from uuid import uuid4
 
-import wait
 from dateutil.parser import parse
 from libcloud.storage.base import StorageDriver
 from libcloud.storage.providers import get_driver
@@ -29,6 +28,7 @@ from libcloud.storage.types import Provider
 from app.config import config
 from app.domain.exceptions import DuplicateClient
 from app.domain.exceptions import UnknownClient
+from app.utils import wait_for_port
 
 
 def _get_driver_kwargs():
@@ -104,4 +104,4 @@ def wait_until_ready():
     else:
         raise ValueError(custom_host)
 
-    wait.tcp.open(port, host)
+    wait_for_port(port=port, host=host)
