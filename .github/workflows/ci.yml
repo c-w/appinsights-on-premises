@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python:
+          - '3.6'
+          - '3.7'
+          - '3.8'
+        app_env:
+          - azurite+libcloud
+          - iotedge+libcloud
+          - postgres
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Setup environment
+        run: |
+          CONNECTOR="${APP_ENV#*+}"
+          BACKEND="${APP_ENV%+*}"
+          DOCKER_IMAGE="${DOCKER_USER}/appinsights-on-premises:${GITHUB_RUN_ID}-${CONNECTOR}"
+          IKEY1="$(python3 -c 'import uuid; print(uuid.uuid4())')"
+          IKEY2="$(python3 -c 'import uuid; print(uuid.uuid4())')"
+
+          echo "PYTHON_VERSION=${PYTHON_VERSION}" >> "${GITHUB_ENV}"
+          echo "CONNECTOR=${CONNECTOR}" >> "${GITHUB_ENV}"
+          echo "BACKEND=${BACKEND}" >> "${GITHUB_ENV}"
+          echo "DOCKER_USER=${DOCKER_USER}" >> "${GITHUB_ENV}"
+          echo "DOCKER_IMAGE=${DOCKER_IMAGE}" >> "${GITHUB_ENV}"
+          echo "IKEY1=${IKEY1}" >> "${GITHUB_ENV}"
+          echo "IKEY2=${IKEY2}" >> "${GITHUB_ENV}"
+          echo "AZURITE_PORT=8889" >> "${GITHUB_ENV}"
+          echo "POSTGRES_PORT=8888" >> "${GITHUB_ENV}"
+          echo "APP_PORT=8080" >> "${GITHUB_ENV}"
+        env:
+          PYTHON_VERSION: ${{ matrix.python }}
+          APP_ENV: ${{ matrix.app_env }}
+          DOCKER_USER: 'cwolff'
+
+      - run: make build
+      - run: make start
+      - run: make tests
+      - run: make stop

@@ -1,6 +1,6 @@
 # AppInsights on-premises
 
-[![Travis CI status](https://api.travis-ci.org/c-w/appinsights-on-premises.svg?branch=master)](https://travis-ci.org/c-w/appinsights-on-premises)
+[![CI status](https://github.com/c-w/appinsights-on-premises/workflows/CI/badge.svg)](https://github.com/c-w/appinsights-on-premises/actions?query=workflow%3ACI)
 [![Dependency status](https://pyup.io/repos/github/c-w/appinsights-on-premises/shield.svg)](https://pyup.io/repos/github/c-w/appinsights-on-premises/)
 [![DockerHub tag](https://images.microbadger.com/badges/version/cwolff/appinsights-on-premises.svg)](https://hub.docker.com/r/cwolff/appinsights-on-premises/tags)
 

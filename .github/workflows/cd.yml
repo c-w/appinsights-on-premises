@@ -1,0 +1,52 @@
+name: CD
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python:
+          - '3.8'
+        app_env:
+          - azurite+libcloud
+          - iotedge+libcloud
+          - postgres
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Setup environment
+        run: |
+          CONNECTOR="${APP_ENV#*+}"
+          BACKEND="${APP_ENV%+*}"
+          DOCKER_TAG="${GITHUB_REF##*/}"
+          DOCKER_IMAGE="${DOCKER_USER}/appinsights-on-premises:${DOCKER_TAG}-${CONNECTOR}"
+
+          echo "PYTHON_VERSION=${PYTHON_VERSION}" >> "${GITHUB_ENV}"
+          echo "CONNECTOR=${CONNECTOR}" >> "${GITHUB_ENV}"
+          echo "BACKEND=${BACKEND}" >> "${GITHUB_ENV}"
+          echo "DOCKER_USER=${DOCKER_USER}" >> "${GITHUB_ENV}"
+          echo "DOCKER_IMAGE=${DOCKER_IMAGE}" >> "${GITHUB_ENV}"
+        env:
+          PYTHON_VERSION: ${{ matrix.python }}
+          APP_ENV: ${{ matrix.app_env }}
+          DOCKER_USER: 'cwolff'
+
+      - run: make build
+
+      - run: make release
+        env:
+          MICROBADGER_TOKEN: ${{ secrets.MICROBADGER_TOKEN }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
